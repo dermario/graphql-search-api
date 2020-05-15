@@ -1,0 +1,63 @@
+schema {
+  query: Query
+}
+
+type Query {
+  search_api_search(
+    index_id: String!,
+    language: String,
+    fulltext: FulltextInput,
+    conditions: [ConditionInput],
+    condition_groups: [ConditionGroupInput],
+    sort: [SortInput],
+    range: RangeInput
+  ): SearchResultResponse
+}
+
+interface EntityInterface {
+  id: Int!
+}
+
+input RangeInput {
+  start: Int!
+  end: Int!
+}
+
+input FulltextInput {
+  keys: String!
+  fields: [String]!
+}
+
+input SortInput {
+  field: String!
+  value: String
+}
+
+input ConditionInput {
+  name: String!
+  value: String!
+  operator: String
+}
+
+input ConditionGroupInput {
+  conditions: [ConditionInput]
+  groups: [ConditionGroupInput]
+  tags: [String]
+  conjunction: QueryConjunction
+}
+
+enum QueryConjunction {
+  AND
+  OR
+}
+
+type SearchResultResponse {
+  result_count: Int!
+  documents: [SearchResultItemDoc]!
+}
+
+type SearchResultItemDoc {
+  id: ID!
+  score: String!
+  entity: EntityInterface!
+}
